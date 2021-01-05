@@ -64,6 +64,7 @@ I2CSPIDriverBase *TERARANGER::instantiate(const BusCLIArguments &cli, const BusI
 {
 	TERARANGER *instance = new TERARANGER(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
 
+	instance->probe();
 	if (instance == nullptr) {
 		PX4_ERR("alloc failed");
 		return nullptr;
@@ -75,10 +76,6 @@ I2CSPIDriverBase *TERARANGER::instantiate(const BusCLIArguments &cli, const BusI
 	}
 
 	instance->start();
-	//int a = instance->probe();
-	//if (a){
-	 //printf("Is there a Teraranger? %d\n",a);
-	//}
 	return instance;
 }
 
@@ -91,8 +88,6 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 	BusCLIArguments cli{true, false};
 	cli.orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING;
 	cli.default_i2c_frequency = 400000;
-	cli.bus_frequency = 400000;
-	cli.keep_running = true;
 	//int probing = ThisDriver::probe();
 	//printf("Is there a Teraranger? %d\n",probing);
 
@@ -121,7 +116,7 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 			a = ThisDriver::module_start(cli, iterator);
 			printf(" Start module failed?  %d \n",a);
 		//}
-		return ThisDriver::module_start(cli, iterator);
+		return a;//ThisDriver::module_start(cli, iterator);
 	}
 
 	if (!strcmp(verb, "stop")) {

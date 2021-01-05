@@ -89,7 +89,7 @@ public:
 	void print_status() override;
 
 	void RunImpl();
-protected:
+//protected:
 
 	virtual int probe() override;
 

@@ -121,7 +121,7 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 			a = ThisDriver::module_start(cli, iterator);
 			printf(" Start module failed?  %d \n",a);
 		//}
-		return ThisDriver::module_start(cli, iterator);
+		return a;//ThisDriver::module_start(cli, iterator);
 	}
 
 	if (!strcmp(verb, "stop")) {

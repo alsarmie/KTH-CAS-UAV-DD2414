@@ -33,8 +33,6 @@
 
 #include "TERARANGER.hpp"
 
-#include "TERARANGER.cpp"
-
 #include <px4_platform_common/getopt.h>
 #include <px4_platform_common/module.h>
 
@@ -75,14 +73,8 @@ I2CSPIDriverBase *TERARANGER::instantiate(const BusCLIArguments &cli, const BusI
 	}
 
 	instance->start();
-	//int a = instance->probe();
-	//if (a){
-	 //printf("Is there a Teraranger? %d\n",a);
-	//}
 	return instance;
 }
-
-
 
 extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 {
@@ -91,10 +83,8 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 	BusCLIArguments cli{true, false};
 	cli.orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING;
 	cli.default_i2c_frequency = 400000;
-	cli.bus_frequency = 400000;
-	cli.keep_running = true;
-	//int probing = ThisDriver::probe();
-	//printf("Is there a Teraranger? %d\n",probing);
+	int probing = ThisDriver::probe();
+	printf("Is there a Teraranger? %d\n",probing);
 
 	while ((ch = cli.getopt(argc, argv, "R:")) != EOF) {
 		switch (ch) {
@@ -121,7 +111,7 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 			a = ThisDriver::module_start(cli, iterator);
 			printf(" Start module failed?  %d \n",a);
 		//}
-		return ThisDriver::module_start(cli, iterator);
+		return a;//ThisDriver::module_start(cli, iterator);
 	}
 
 	if (!strcmp(verb, "stop")) {

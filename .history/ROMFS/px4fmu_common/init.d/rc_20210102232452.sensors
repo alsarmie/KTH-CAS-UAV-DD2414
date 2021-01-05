@@ -11,7 +11,7 @@ then
 	then
 		# Configure all I2C buses to 100 KHz as they
 		# are all external or slow
-		# TODO: check impact
+		# TODO: move this
 		pwm_out i2c 1 400000
 		pwm_out i2c 2 400000
 	fi

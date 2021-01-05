@@ -520,8 +520,8 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 		// print some info that we are running
 		switch (iterator.busType()) {
 		case BOARD_I2C_BUS:
-			PX4_INFO_RAW("%s #%i on I2C bus %d%s  with dev id 0x%x \n", instance->ItemName(), runtime_instance, iterator.bus(),
-				     iterator.external() ? " (external)" : "",iterator.devid());
+			PX4_INFO_RAW("%s #%i on I2C bus %d%s\n", instance->ItemName(), runtime_instance, iterator.bus(),
+				     iterator.external() ? " (external)" : "");
 
 			break;
 

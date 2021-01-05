@@ -472,7 +472,7 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 {
 	if (iterator.configuredBusOption() == I2CSPIBusOption::All) {
 		PX4_ERR("need to specify a bus type");
-		//printf("Need to specify a bus type\n");
+		printf("Need to specify a bus type");
 		print_usage();
 		return -1;
 	}
@@ -481,7 +481,7 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 
 	while (iterator.next()) {
 		if (iterator.instance()) {
-			PX4_WARN("Already running on bus %i\n", iterator.bus());
+			PX4_WARN("Already running on bus %i", iterator.bus());
 			continue;
 		}
 
@@ -496,7 +496,7 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 
 		case BOARD_INVALID_BUS: device_id.devid_s.bus_type = device::Device::DeviceBusType_UNKNOWN; break;
 		}
-		//PX4_INFO("Running device type: %d\n",device_id.devid_s.bus_type);
+
 		const int runtime_instance = iterator.runningInstancesCount();
 		I2CSPIDriverInitializing initializer_data{cli, iterator, instantiate, runtime_instance};
 		// initialize the object and bus on the work queue thread - this will also probe for the device
@@ -506,12 +506,12 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 		I2CSPIDriverBase *instance = initializer_data.instance;
 
 		if (!instance) {
-			PX4_INFO_RAW("instantiate failed (no device on bus %i (devid 0x%x)?) \n", iterator.bus(), iterator.devid());
+			PX4_DEBUG("instantiate failed (no device on bus %i (devid 0x%x)?)", iterator.bus(), iterator.devid());
 			continue;
 		}
 
 		if (cli.i2c_address != 0 && instance->_i2c_address == 0) {
-			PX4_WARN("Bug: driver %s does not pass the I2C address to I2CSPIDriverBase\n", instance->ItemName());
+			PX4_ERR("Bug: driver %s does not pass the I2C address to I2CSPIDriverBase", instance->ItemName());
 		}
 
 		iterator.addInstance(instance);
@@ -520,8 +520,8 @@ int I2CSPIDriverBase::module_start(const BusCLIArguments &cli, BusInstanceIterat
 		// print some info that we are running
 		switch (iterator.busType()) {
 		case BOARD_I2C_BUS:
-			PX4_INFO_RAW("%s #%i on I2C bus %d%s  with dev id 0x%x \n", instance->ItemName(), runtime_instance, iterator.bus(),
-				     iterator.external() ? " (external)" : "",iterator.devid());
+			PX4_INFO_RAW("%s #%i on I2C bus %d%s\n", instance->ItemName(), runtime_instance, iterator.bus(),
+				     iterator.external() ? " (external)" : "");
 
 			break;
 

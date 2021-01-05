@@ -73,7 +73,7 @@ using namespace time_literals;
 #define TERARANGER_EVO_MINI_MAX_DISTANCE       (3.3f)
 #define TERARANGER_EVO_MINI_MIN_DISTANCE       (0.03f)
 
-#define TERARANGER_MEASUREMENT_INTERVAL         50_ms
+#define TERARANGER_MEASUREMENT_INTERVAL         10_ms
 
 class TERARANGER : public device::I2C, public I2CSPIDriver<TERARANGER>
 {

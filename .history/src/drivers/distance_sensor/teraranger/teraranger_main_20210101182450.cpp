@@ -33,8 +33,6 @@
 
 #include "TERARANGER.hpp"
 
-#include "TERARANGER.cpp"
-
 #include <px4_platform_common/getopt.h>
 #include <px4_platform_common/module.h>
 
@@ -75,14 +73,29 @@ I2CSPIDriverBase *TERARANGER::instantiate(const BusCLIArguments &cli, const BusI
 	}
 
 	instance->start();
-	//int a = instance->probe();
-	//if (a){
-	 //printf("Is there a Teraranger? %d\n",a);
-	//}
 	return instance;
 }
 
+int probe_sensor()
+{
+	uint8_t who_am_i = 0;
 
+	const uint8_t cmd = TERARANGER_WHO_AM_I_REG;
+
+	// Can't use a single transfer as Teraranger needs a bit of time for internal processing.
+	if (I2C::transfer(&cmd, 1, nullptr, 0) == OK) {
+		if (I2C::transfer(nullptr, 0, &who_am_i, 1) == OK && who_am_i == TERARANGER_WHO_AM_I_REG_VAL) {
+			return measure();
+		}
+	}
+
+	PX4_INFO("WHO_AM_I byte mismatch 0x%02x should be 0x%02x\n",
+		  (unsigned)who_am_i,
+		  TERARANGER_WHO_AM_I_REG_VAL);
+
+	// Not found on any address.
+	return -EIO;
+}
 
 extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 {
@@ -91,10 +104,8 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 	BusCLIArguments cli{true, false};
 	cli.orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING;
 	cli.default_i2c_frequency = 400000;
-	cli.bus_frequency = 400000;
-	cli.keep_running = true;
-	//int probing = ThisDriver::probe();
-	//printf("Is there a Teraranger? %d\n",probing);
+	int probing = probe_sensor();
+	printf("Is there a Teraranger? %d\n",probing);
 
 	while ((ch = cli.getopt(argc, argv, "R:")) != EOF) {
 		switch (ch) {
@@ -121,7 +132,7 @@ extern "C" __EXPORT int teraranger_main(int argc, char *argv[])
 			a = ThisDriver::module_start(cli, iterator);
 			printf(" Start module failed?  %d \n",a);
 		//}
-		return ThisDriver::module_start(cli, iterator);
+		return a;//ThisDriver::module_start(cli, iterator);
 	}
 
 	if (!strcmp(verb, "stop")) {

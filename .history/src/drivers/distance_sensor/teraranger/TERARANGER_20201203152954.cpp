@@ -79,7 +79,7 @@ TERARANGER::TERARANGER(I2CSPIBusOption bus_option, const int bus, const uint8_t 
 	_px4_rangefinder(get_device_id(), rotation)
 {
 	// up the retries since the device misses the first measure attempts
-	I2C::_retries = 5;
+	I2C::_retries = 3;
 }
 
 TERARANGER::~TERARANGER()
@@ -209,7 +209,6 @@ int TERARANGER::init()
 		// I2C init (and probe) first.
 
 		if (I2C::init() != OK) {
-			printf("I2C teramini failed!\n");
 			return PX4_ERROR;
 		}
 
@@ -254,7 +253,7 @@ int TERARANGER::probe()
 		}
 	}
 
-	PX4_INFO("WHO_AM_I byte mismatch 0x%02x should be 0x%02x\n",
+	PX4_DEBUG("WHO_AM_I byte mismatch 0x%02x should be 0x%02x\n",
 		  (unsigned)who_am_i,
 		  TERARANGER_WHO_AM_I_REG_VAL);
 

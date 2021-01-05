@@ -209,7 +209,6 @@ int TERARANGER::init()
 		// I2C init (and probe) first.
 
 		if (I2C::init() != OK) {
-			printf("I2C teramini failed!\n");
 			return PX4_ERROR;
 		}
 
